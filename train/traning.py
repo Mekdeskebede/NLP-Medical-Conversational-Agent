@@ -3,6 +3,7 @@ import re
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
+
 import nltk
 
 def process_user_input(user_input):
@@ -86,3 +87,4 @@ while True:
     if user_input.lower() in ['በቃ', 'quit']:
         print("Assistant:", "ቻው ቻው")
         break
+
