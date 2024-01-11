@@ -8,7 +8,7 @@ import nltk
 
 def process_user_input(user_input):
     # Load intents from a JSON file
-    with open('/kaggle/input/amharic-data/amharic_intent.json', 'r') as file:
+    with open('../data/amharic_intent.json', 'r') as file:
         intents = json.load(file)
 
     # Prepare the training data for intent recognition
