@@ -24,7 +24,7 @@ def process_user_input(user_input, intent_classifier, vectorizer, intent_respons
         if not is_amharic:
             filtered_response = "እባክዎን ጥያቄዎን በአማርኛ ቋንቋ ብቻ ያቅርቡ"
             return user_input, predicted_intent, filtered_response
-        elif len(user_input.split()) <= 1 and user_input not in single_words:
+        elif len([word for word in user_input if word != " " and word != "" ]) <= 2 and user_input not in single_words:
             filtered_response = np.random.choice(["የእርስዎ ግብዓት በጣም አጭር ነው። እባክዎ ተጨማሪ አውድ ወይም የተሟላ ዓረፍተ ነገር ያቅርቡ።",
                                                   "ይቅርታ፣ አልገባኝም እባክህ እንደገና መግለጽ ትችላለህ ወይስ ሌላ ጥያቄ ጠይቅ?",
                                                   "ይቅርታ፣ ተጨማሪ ዝርዝሮችን መስጠት ትችላለህ ወይም ሌላ ጥያቄ መሞከር ትችላለህ?"])
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     train_features = vectorizer.fit_transform(train_texts)
 
     # Train a logistic regression model for intent recognition
-    intent_classifier =  SVC(kernel='linear')
+    intent_classifier = SVC(kernel='linear')
     intent_classifier.fit(train_features, train_labels)
 
   
