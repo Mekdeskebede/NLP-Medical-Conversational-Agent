@@ -45,7 +45,7 @@ def process_user_input(user_input, intent_classifier, vectorizer, intent_respons
         else:
             # Convert the user input into a numerical representation
             user_input_features = vectorizer.transform([user_input])
-    # Handle the case where the user input is not found in the dataset
+            # Handle the case where the user input is not found in the dataset
             if user_input_features.nnz == 0:
                 filtered_response = "ተጨማሪ ዝርዝሮችን መስጠት ትችላለህ ወይም ሌላ ጥያቄ መሞከር ትችላለህ?"
                 return user_input, predicted_intent, filtered_response
