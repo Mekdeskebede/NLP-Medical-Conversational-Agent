@@ -15,14 +15,14 @@ CORS(app)  # Enable CORS for all routes
 def process_user_input(user_input, intent_classifier, vectorizer, intent_responses):
     try:
         predicted_intent = None
-        single_words = ["እርዳኝ", "እገዛ", "ቆንጆ", "እሺ", "አመሰግናለሁ", "ደህና", "ሰላምታ", "ሰላም", "ሃይ", "ሄይ", "ሄሎ", "መልካም", "ማን ልበልህ"]
+        single_words = ["እርዳኝ", "እገዛ", "ቆንጆ", "እሺ", "አመሰግናለሁ", "ደህና", "ሰላምታ", "ሰላም", "ሃይ", "ሄይ", "ሄሎ", "መልካም", "ማን ልበልህ", "ቻው", "በቃ", "ይበቃል", "አመሰግናለሁ", "እሺ"]
         # Check if the user input is in Amharic (except for the word 'cya')
-        is_amharic = all("\u1200" <= c <= "\u137F" or c.isspace() or c in ",/?!" for c in user_input) and "cya" not in user_input.lower()
+        is_amharic = all("\u1200" <= c <= "\u137F" or c.isspace() or c.isnumeric() or c in ",/?!:።፣፤፥፦፧" for c in user_input) and "cya" not in user_input.lower()
        
 
         # Check if the user input is a single word and request more context if so
         if not is_amharic:
-            filtered_response = "እባክዎን ጥያቄዎን በአማርኛ ቋንቋ ብቻ ያቅርቡ"
+            filtered_response = "እባክዎን ጥያቄዎን በአማርኛ ቋንቋ ብቻ ያቅርቡ" 
             return user_input, predicted_intent, filtered_response
         elif len([word for word in user_input if word != " " and word != "" ]) <= 2 and user_input not in single_words:
             filtered_response = np.random.choice(["የእርስዎ ግብዓት በጣም አጭር ነው። እባክዎ ተጨማሪ አውድ ወይም የተሟላ ዓረፍተ ነገር ያቅርቡ።",
