@@ -1,5 +1,16 @@
 # NLP-Medical-Conversational-Agent
 
+
+prepared by:-
+
+- Feven Tolla UGR/4493/12 software engineering Section-1
+- Mekdes Kebede UGR/3127/12 software engineering Section-1
+- Bereket Demissie UGR/0587/12 software engineering Section-1
+- Dagmawi Yesuf UGR/3493/12 software engineering Section-1
+- Gifti Mulugeta UGR/6377/12 software engineering Section-1
+
+
+
 The Medical Conversational Agent is an AI-powered chatbot designed to provide automated assistance and answer questions related to medical and healthcare topics. This conversational agent utilizes natural language processing and machine learning techniques to understand user queries, infer their intent, and generate appropriate responses.
 
 Features
