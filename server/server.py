@@ -5,26 +5,39 @@ nltk.download('punkt')
 import json
 import re
 import numpy as np
-# from pyngrok import ngrok
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+prefixes = ['በ', 'የ', 'ለ',]
+suffixes = ["ነ", "ን", "ው", "ል", "ም", "ት", "ላ", "ምን", "ለት","ሁ"]
+
+# Function to remove prefixes from an Amharic word
+def remove_prefix(word):
+    for prefix in prefixes:
+        if word.startswith(prefix):
+            return word[len(prefix):]
+    # for suffix in suffixes:
+    #         if word.endswith(suffix):
+    #             word = word[:-len(suffix)]
+    return word
 def process_user_input(user_input, intent_classifier, vectorizer, intent_responses):
     try:
         predicted_intent = None
         single_words = ["እርዳኝ", "እገዛ", "ቆንጆ", "እሺ", "አመሰግናለሁ", "ደህና", "ሰላምታ", "ሰላም", "ሃይ", "ሄይ", "ሄሎ", "መልካም", "ማን ልበልህ"]
         # Check if the user input is in Amharic (except for the word 'cya')
         is_amharic = all("\u1200" <= c <= "\u137F" or c.isspace() or c in ",/?!" for c in user_input) and "cya" not in user_input.lower()
-       
-
+    
         # Check if the user input is a single word and request more context if so
         if not is_amharic:
             filtered_response = "እባክዎን ጥያቄዎን በአማርኛ ቋንቋ ብቻ ያቅርቡ"
             return user_input, predicted_intent, filtered_response
-        elif len([word for word in user_input if word != " " and word != "" ]) <= 2 and user_input not in single_words:
+        # elif len(user_input.split()) <= 1 and user_input not in single_words:
+        elif len([word for word in user_input if word != " " and word != "" ]) <= 1 and user_input not in single_words:
             filtered_response = np.random.choice(["የእርስዎ ግብዓት በጣም አጭር ነው። እባክዎ ተጨማሪ አውድ ወይም የተሟላ ዓረፍተ ነገር ያቅርቡ።",
                                                   "ይቅርታ፣ አልገባኝም እባክህ እንደገና መግለጽ ትችላለህ ወይስ ሌላ ጥያቄ ጠይቅ?",
                                                   "ይቅርታ፣ ተጨማሪ ዝርዝሮችን መስጠት ትችላለህ ወይም ሌላ ጥያቄ መሞከር ትችላለህ?"])
@@ -32,6 +45,10 @@ def process_user_input(user_input, intent_classifier, vectorizer, intent_respons
         else:
             # Convert the user input into a numerical representation
             user_input_features = vectorizer.transform([user_input])
+            # Handle the case where the user input is not found in the dataset
+            if user_input_features.nnz == 0:
+                filtered_response = "ተጨማሪ ዝርዝሮችን መስጠት ትችላለህ ወይም ሌላ ጥያቄ መሞከር ትችላለህ?"
+                return user_input, predicted_intent, filtered_response
 
             # Predict the intent for the user input
             predicted_intent = intent_classifier.predict(user_input_features)[0]
@@ -58,6 +75,8 @@ def process_input():
     try:
         data = request.get_json()
         user_input = data['user_input']
+        user_input = remove_prefix(user_input)
+        print (user_input)
         _, predicted_intent, filtered_response = process_user_input(user_input, intent_classifier, vectorizer, intent_responses)
         return jsonify({'predicted_intent': predicted_intent, 'filtered_response': filtered_response})
     except Exception as e:
@@ -93,14 +112,17 @@ if __name__ == '__main__':
 
             train_texts.append(processed_pattern)
             train_labels.append(tag)
+    
 
     # Feature extraction using bag-of-words with n-grams
-    vectorizer = CountVectorizer(lowercase=True, token_pattern=r'\b\w+\b', ngram_range=(1, 2))
+    # vectorizer = CountVectorizer(lowercase=True, token_pattern=r'\b\w+\b', ngram_range=(1, 2))
+    vectorizer = TfidfVectorizer(lowercase=True, token_pattern=r'\b\w+\b', ngram_range=(1, 2))
     train_features = vectorizer.fit_transform(train_texts)
 
     # Train a logistic regression model for intent recognition
     intent_classifier = SVC(kernel='linear')
+    # intent_classifier = LogisticRegression()
     intent_classifier.fit(train_features, train_labels)
 
   
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
