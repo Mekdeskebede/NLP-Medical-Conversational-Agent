@@ -35,7 +35,7 @@ const ChatScreen = () => {
     setInputText("");
 
     // Replace the API_ENDPOINT with your server API endpoint
-    fetch("http://10.5.193.79:5000/process_input", {
+    fetch("http://10.5.212.110:5000/process_input", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const ChatScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={image} style={styles.image} blurRadius={3}>
+      <ImageBackground source={image} style={styles.image}>
         <GiftedChat
           messages={messages}
           onSend={handleSend}
